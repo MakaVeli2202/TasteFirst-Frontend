@@ -198,7 +198,7 @@ git config --global user.email "your.email@example.com"
 
 ### **STEP 3: Create React Project & Initial Folder Structure**
 This step creates the foundational React project and organizes its directories for future development.
-1.  **Create a new React project named 'RealCalories' using Vite:**
+1.  **Create a new React project named 'TasteFirst' using Vite:**
     ```bash
     # First, navigate to your desired development directory.
     # For example, to create it directly on your desktop:
@@ -207,11 +207,11 @@ This step creates the foundational React project and organizes its directories f
     # `vite@latest` specifies using the latest version of Vite (a fast build tool).
     # `Healthier` is the name of your project folder that will be created.
     # `-- --template react` tells Vite to use the React template.
-    npm create vite@latest RealCalories -- --template react
+    npm create vite@latest TasteFirst -- --template react
     ```
 2.  **Move into the newly created project directory:**
     ```bash
-    cd RealCalories
+    cd TasteFirst
     ```
 3.  **Install initial project dependencies:**
     ```bash
@@ -261,7 +261,16 @@ This step sets up version control for your project and links it to a remote repo
     Thumbs.db               # Windows-specific file
 
     ````
-3.  **Perform Initial Commit:**
+4.  3.  **Create a New Repository on GitHub:**
+    You'll now create a blank space on GitHub to store your project remotely.
+    *   Go to: [https://github.com/new](https://github.com/new)
+    *   **Repository Name:** Enter `TasteFirst-Frontend` (or a similar descriptive name).
+    *   **Visibility:** Choose "Public" or "Private" as preferred.
+    *   **Crucially, DO NOT initialize this new GitHub repository with:** "Add a README file", "Add .gitignore", or "Choose a license". You've already done these steps locally.
+    *   Click "Create repository".
+    *   On the next screen, copy the **HTTPS URL** provided (it will look like `https://github.com/YOUR_USERNAME/TasteFirst-Frontend.git`).
+    
+    **Perform Initial Commit:**
     This command stages all currently untracked files and saves them as the very first version (commit) in your Git history.
     ```bash
     # 'git add .' stages all changes in the current directory and its subdirectories.
@@ -270,21 +279,14 @@ This step sets up version control for your project and links it to a remote repo
     # This message should briefly describe the changes in the commit.
     git commit -m "feat: Initial React project setup with Vite and folder structure"
     ```
-4.  **Create a New Repository on GitHub:**
-    You'll now create a blank space on GitHub to store your project remotely.
-    *   Go to: [https://github.com/new](https://github.com/new)
-    *   **Repository Name:** Enter `RealCalories-Frontend` (or a similar descriptive name).
-    *   **Visibility:** Choose "Public" or "Private" as preferred.
-    *   **Crucially, DO NOT initialize this new GitHub repository with:** "Add a README file", "Add .gitignore", or "Choose a license". You've already done these steps locally.
-    *   Click "Create repository".
-    *   On the next screen, copy the **HTTPS URL** provided (it will look like `https://github.com/YOUR_USERNAME/RealCalories-Frontend.git`).
+
 
 5.  **Add the GitHub repository as a remote origin:**
     This command tells your local Git repository *where* its remote (GitHub) counterpart is located.
     ```bash
     # 'git remote add origin' links your local repo to the remote URL.
     # 'origin' is the conventional name for the primary remote repository.
-    git remote add origin https://github.com/YOUR_USERNAME/RealCalories-Frontend.git
+    git remote add origin https://github.com/YOUR_USERNAME/TasteFirst-Frontend.git
     ```
   
 6.  **Push your local commits to GitHub:**

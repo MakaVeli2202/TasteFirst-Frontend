@@ -30,29 +30,29 @@ This checklist provides a step-by-step guide with the necessary commands for bui
 *   **Git Repository Setup:**
     *   [x] Run `git init`.
     *   [x] add necessary exclusions  to the `.gitignore` file.
-    *   [ ] Run `git add .`.
-    *   [ ] Run `git commit -m "feat: Initial React project setup with Vite and folder structure"`.
-    *   [ ] Create a new empty GitHub repository (e.g., `TasteFirst-Frontend`).
-    *   [ ] Run `git remote add origin <your-github-repo-url>`.
-    *   [ ] Run `git push -u origin main` (or `master`).
+    *   [x] Run `git add .`.
+    *   [x] Create a new empty GitHub repository (e.g., `TasteFirst-Frontend`).
+    *   [x] Run `git commit -m "feat: Initial React project setup with Vite and folder structure"`.
+    *   [x] Run `git remote add origin <https://github.com/MakaVeli2202/TasteFirst-Frontend.git>`.
+    *   [x] Run `git push -u origin main`.
 
 ### **✅ Week 1: App Overview, Core Frontend Architecture & Initial Pages**
 
 *   **Install Core Frontend Dependencies:**
-    *   [ ] Run `npm install react-router-dom axios lucide-react`.
+    *   [x] Run `npm install react-router-dom axios lucide-react`.
 *   **Install Development Dependencies:**
-    *   [ ] Run `npm install -D tailwindcss@3 postcss autoprefixer eslint eslint-plugin-react`.
+    *   [x] Run `npm install -D tailwindcss@3 postcss autoprefixer eslint eslint-plugin-react`.
 *   **Tailwind CSS Configuration:**
-    *   [ ] Run `npx tailwindcss init -p`.
-    *   [ ] Edit `tailwind.config.js` to include `content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"]`.
-    *   [ ] Add Tailwind directives (`@tailwind base;`, etc.) to `src/index.css`.
+    *   [x] Run `npx tailwindcss init -p`.
+    *   [x] Edit `tailwind.config.js` to include `content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"]`.
+    *   [x] Add Tailwind directives (`@tailwind base;`, etc.) to `src/index.css`.
 *   **Create Utility & Configuration Files:**
-    *   [ ] Create `src/utils/logger.js`.
-    *   [ ] Create `.env.example`.
-    *   [ ] Create `.env` (copying content from `.env.example`).
-    *   [ ] Create `src/constants/config.js`.
+    *   [x] Create `src/utils/logger.js`.
+    *   [x] Create `.env.example`.
+    *   [x] Create `.env` (copying content from `.env.example`).
+    *   [x] Create `src/constants/config.js`.
 *   **Create API & Global Context Files:**
-    *   [ ] Create `src/services/api.js`.
+    *   [x] Create `src/services/api.js`.
     *   [ ] Create `src/services/auth.js` (with mock data).
     *   [ ] Create `src/services/products.js` (with mock data).
     *   [ ] Create `src/context/CartContext.jsx`.
