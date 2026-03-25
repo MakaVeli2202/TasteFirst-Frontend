@@ -4,8 +4,11 @@ import { AuthProvider } from './context/AuthContext';
 import ErrorBoundary from './components/ErrorBoundary';
 import Header from './components/Header';
 import Footer from './components/Footer';
+
+// Page Components
 import HomePage from './pages/HomePage';
 import ProductCatalog from './pages/ProductCatalog';
+import ProductDetailPage from './pages/ProductDetailPage';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import OrderConfirmation from './pages/OrderConfirmation';
@@ -20,15 +23,23 @@ function App() {
         <CartProvider>
           <Router>
             <Header />
-            <main className="min-h-screen bg-white">
+            <main className="min-h-screen bg-gray-50">
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products" element={<ProductCatalog />} />
+                <Route path="/products/:id" element={<ProductDetailPage />} />
+                
+                {/* Cart & Checkout */}
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/order-confirmation/:orderNumber" element={<OrderConfirmation />} />
+                
+                {/* Auth Routes */}
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+                
+                {/* 404 Fallback */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </main>

@@ -1,107 +1,161 @@
-import { createContext,useContext,useState,useEffect, use } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import { authAPI } from "../services/auth";
 import { logger } from "../utils/logger";
-import { LogIn, Thermometer, UserCogIcon } from "lucide-react";
 
 const AuthContext = createContext(null);
 
-export function useAuth (){
+export function useAuth() {
     const context = useContext(AuthContext);
-    if (context === undefined){
+    if (context === undefined) {
         throw new Error('useAuth must be used inside AuthProvider');
     }
     return context;
 }
 
-export function AuthProvider({ children }){
-    const [user,setUser] = useState(null);
-    const [token,setToken ] = useState(localStorage.getItem("authToken"));
-    const [loading,setloading] = useState(true);
-    const [error,setError] = useState(null);
+export function AuthProvider({ children }) {
+    // Initialize user from localStorage
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem('user');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
+    
+    const [token, setToken] = useState(localStorage.getItem("authToken"));
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    // Helper to update user and persist to localStorage
+    const updateUserState = (userData) => {
+        setUser(userData);
+        if (userData) {
+            localStorage.setItem('user', JSON.stringify(userData));
+        } else {
+            localStorage.removeItem('user');
+        }
+    };
 
     useEffect(() => {
         const checkAuth = async () => {
-            try{
-                if(token)
-                {
+            try {
+                if (token) {
                     const userData = await authAPI.getCurrentUser();
-                    setUser(userData);
+                    updateUserState(userData);
                     logger.info('User authenticated', userData);
                 }
-            }
-            catch(error)
-            {
-                logger.error("auth check failed",error)
+            } catch (error) {
+                if (error.response?.status === 401) {
+                    logger.warn("Token expired or invalid");
+                    setError("Your session has expired. Please login again.");
+                } else {
+                    logger.error("Auth check failed", error);
+                }
+                
                 localStorage.removeItem("authToken");
                 setToken(null);
-                setUser(null);
-            }
-            finally
-            {
-                setloading(false);
+                updateUserState(null);
+            } finally {
+                setLoading(false);
             }
         };
-        checkAuth();    
-    },[token]);
+        checkAuth();
+    }, [token]);
 
     const register = async (userData) => {
-        try{
-            setloading(true);
+        try {
+            setLoading(true);
             setError(null);
             const response = await authAPI.register(userData);
             logger.info('User registered successfully');
+            
+            if (response.token) {
+                localStorage.setItem("authToken", response.token);
+                setToken(response.token);
+                updateUserState({
+                    id: response.userId,
+                    email: response.email,
+                    firstName: response.firstName,
+                    lastName: response.lastName,
+                    role: response.role,
+                });
+            }
+            
             return { success: true, data: response };
-        }
-        catch(error)
-        {
+        } catch (error) {
             const errorMessage = error.response?.data?.message || error.message;
             setError(errorMessage);
             logger.error('Registration error', error);
             return { success: false, error: errorMessage };
-        }
-        finally
-        {
-            setloading(false);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const login = async (email,password) =>{
-        try{
-            setloading(true);
+    const login = async (email, password) => {
+        try {
+            setLoading(true);
             setError(null);
-            const response = await authAPI.login(email,password);
-            localStorage.setItem("authToken",response.token);
+            const response = await authAPI.login(email, password);
+            
+            localStorage.setItem("authToken", response.token);
             setToken(response.token);
-            setUser({
-                id: response.userData.userId,
-                email: response.userData.email,
-                firstName: response.userData.firstName,
-                lastName: response.userData.lastName,
-                role: response.userData.role,
+            
+            updateUserState({
+                id: response.userId,
+                email: response.email,
+                firstName: response.firstName,
+                lastName: response.lastName,
+                role: response.role,
             });
-            logger.info('User logged in', response.email);
+            
+            logger.info('User logged in', email);
             return { success: true, data: response };
-        }
-        catch(error)
-        {
+        } catch (error) {
             const errorMessage = error.response?.data?.message || 'Login failed';
             setError(errorMessage);
             logger.error('Login error', error);
             return { success: false, error: errorMessage };
-        }
-        finally
-        {
-            setloading(false);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const logout = () => {
-        localStorage.removeItem("authToken");
-        setToken(null);
-        setError(null);
-        setUser(null);
-        logger.info("user logged out");
+    const logout = async () => {
+        try {
+            await authAPI.logout();
+        } catch (error) {
+            logger.error('Logout API call failed', error);
+        } finally {
+            localStorage.removeItem("authToken");
+            setToken(null);
+            setError(null);
+            updateUserState(null);
+            logger.info("User logged out");
+        }
     };
+
+    const updateProfile = async (profileData) => {
+        try {
+            setLoading(true);
+            setError(null);
+            const response = await authAPI.updateProfile(profileData);
+            
+            updateUserState({
+                ...user,
+                ...response
+            });
+            
+            logger.info('Profile updated successfully');
+            return { success: true, data: response };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Update failed';
+            setError(errorMessage);
+            logger.error('Profile update error', error);
+            return { success: false, error: errorMessage };
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const clearError = () => setError(null);
 
     const isAuthenticated = () => {
         return !!user && !!token;
@@ -111,7 +165,7 @@ export function AuthProvider({ children }){
         return user?.role === 'Admin';
     };
 
-    const value ={
+    const value = {
         user,
         token,
         error,
@@ -119,12 +173,15 @@ export function AuthProvider({ children }){
         register,
         login,
         logout,
+        updateProfile,
+        clearError,
         isAuthenticated,
         isAdmin,
-    }
+    };
 
-    return (<AuthContext.Provider value={value}>
-        {children}
-    </AuthContext.Provider>
+    return (
+        <AuthContext.Provider value={value}>
+            {children}
+        </AuthContext.Provider>
     );
 }
